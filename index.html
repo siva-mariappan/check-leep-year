@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leap Year Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #CCCCFF 0%, #C5C5FF 25%, #B8B8FF 50%, #ADADFF 75%, #A3A3FF 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #8A87D4, #6B66CC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            margin: 30px 0;
+        }
+
+        .year-input {
+            width: 250px;
+            padding: 15px 20px;
+            font-size: 24px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            text-align: center;
+            margin: 10px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .year-input:focus {
+            outline: none;
+            border-color: #8A87D4;
+            box-shadow: 0 0 20px rgba(138, 135, 212, 0.3);
+            transform: scale(1.05);
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, #8A87D4, #6B66CC);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 10px;
+            box-shadow: 0 8px 20px rgba(138, 135, 212, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(138, 135, 212, 0.4);
+        }
+
+        .check-btn:active {
+            transform: translateY(0);
+        }
+
+        .random-btn {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 6px 15px rgba(245, 87, 108, 0.3);
+        }
+
+        .random-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .result-section {
+            margin: 30px 0;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e9ecef;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .result-text {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .leap-year {
+            color: #27ae60;
+            border-color: #27ae60;
+            background: linear-gradient(135deg, #d5f4e6, #ffffff);
+        }
+
+        .not-leap-year {
+            color: #e74c3c;
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #fadbd8, #ffffff);
+        }
+
+        .explanation {
+            background: rgba(108, 117, 125, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #495057;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .rule-list {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .rule-list li {
+            margin: 8px 0;
+            padding: 5px 0;
+        }
+
+        .examples-section {
+            background: rgba(138, 135, 212, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .examples-title {
+            color: #2c3e50;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .example-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .example-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: #8A87D4;
+        }
+
+        .example-year {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .example-status {
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .leap {
+            color: #27ae60;
+        }
+
+        .not-leap {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .year-input {
+                width: 200px;
+                font-size: 20px;
+            }
+            
+            .example-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calendar-icon">🗓️</div>
+        <h1>Leap Year Checker</h1>
+        <p class="subtitle">Discover if any year is a leap year!</p>
+        
+        <div class="input-section">
+            <input type="number" 
+                   id="yearInput" 
+                   class="year-input" 
+                   placeholder="Enter a year" 
+                   min="1" 
+                   max="9999"
+                   onkeypress="handleKeyPress(event)">
+            <br>
+            <button class="check-btn" onclick="checkLeapYear()">
+                🔍 Check Year
+            </button>
+            <button class="random-btn" onclick="checkRandomYear()">
+                🎲 Random Year
+            </button>
+        </div>
+        
+        <div class="result-section" id="resultSection">
+            <!-- Results will appear here -->
+        </div>
+        
+        <div class="explanation">
+            <h3>📚 Leap Year Rules:</h3>
+            <ul class="rule-list">
+                <li><strong>Rule 1:</strong> If divisible by 4 → might be leap year</li>
+                <li><strong>Rule 2:</strong> If divisible by 100 → NOT leap year</li>
+                <li><strong>Rule 3:</strong> If divisible by 400 → IS leap year</li>
+            </ul>
+            <p><strong>Summary:</strong> A year is a leap year if it's divisible by 4, except for century years which must be divisible by 400.</p>
+        </div>
+        
+        <div class="examples-section">
+            <div class="examples-title">🎯 Quick Examples - Click to Test:</div>
+            <div class="example-grid">
+                <div class="example-item" onclick="testYear(2024)">
+                    <div class="example-year">2024</div>
+                    <div class="example-status leap">Leap Year</div>
+                </div>
+                <div class="example-item" onclick="testYear(2023)">
+                    <div class="example-year">2023</div>
+                    <div class="example-status not-leap">Not Leap</div>
+                </div>
+                <div class="example-item" onclick="testYear(2000)">
+                    <div class="example-year">2000</div>
+                    <div class="example-status leap">Leap Year</div>
+                </div>
+                <div class="example-item" onclick="testYear(1900)">
+                    <div class="example-year">1900</div>
+                    <div class="example-status not-leap">Not Leap</div>
+                </div>
+                <div class="example-item" onclick="testYear(2028)">
+                    <div class="example-year">2028</div>
+                    <div class="example-status leap">Leap Year</div>
+                </div>
+                <div class="example-item" onclick="testYear(2100)">
+                    <div class="example-year">2100</div>
+                    <div class="example-status not-leap">Not Leap</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function isLeapYear(year) {
+            // Leap year logic:
+            // 1. Divisible by 4 AND
+            // 2. (NOT divisible by 100 OR divisible by 400)
+            return (year % 4 === 0) && (year % 100 !== 0 || year % 400 === 0);
+        }
+
+        function checkLeapYear() {
+            const yearInput = document.getElementById('yearInput');
+            const year = parseInt(yearInput.value);
+            
+            if (!year || year < 1 || year > 9999) {
+                showError('Please enter a valid year (1-9999)');
+                return;
+            }
+            
+            displayResult(year);
+        }
+
+        function checkRandomYear() {
+            // Generate random year between 1800 and 2100
+            const randomYear = Math.floor(Math.random() * 301) + 1800;
+            document.getElementById('yearInput').value = randomYear;
+            displayResult(randomYear);
+        }
+
+        function testYear(year) {
+            document.getElementById('yearInput').value = year;
+            displayResult(year);
+        }
+
+        function displayResult(year) {
+            const resultSection = document.getElementById('resultSection');
+            const leap = isLeapYear(year);
+            
+            // Calculate days in February
+            const daysInFeb = leap ? 29 : 28;
+            
+            // Find next leap year if current year is not leap
+            let nextLeapYear = year;
+            if (!leap) {
+                nextLeapYear = year + 1;
+                while (!isLeapYear(nextLeapYear)) {
+                    nextLeapYear++;
+                }
+            }
+            
+            // Create detailed explanation
+            let explanation = '';
+            if (year % 4 !== 0) {
+                explanation = `${year} ÷ 4 = ${(year / 4).toFixed(2)} (not divisible by 4)`;
+            } else if (year % 100 !== 0) {
+                explanation = `${year} ÷ 4 = ${year / 4} ✓ and not divisible by 100`;
+            } else if (year % 400 !== 0) {
+                explanation = `${year} ÷ 100 = ${year / 100} ✓ but ${year} ÷ 400 = ${(year / 400).toFixed(2)} (not divisible by 400)`;
+            } else {
+                explanation = `${year} ÷ 400 = ${year / 400} ✓ (divisible by 400)`;
+            }
+            
+            resultSection.innerHTML = `
+                <div class="result-card ${leap ? 'leap-year' : 'not-leap-year'} show">
+                    <div class="result-icon">${leap ? '🎉' : '🗓️'}</div>
+                    <div class="result-text">
+                        ${year} is ${leap ? '' : 'NOT '}a Leap Year!
+                    </div>
+                    <div style="font-size: 1.2em; margin: 15px 0;">
+                        <strong>February ${year} has ${daysInFeb} days</strong>
+                    </div>
+                    <div style="font-size: 1em; color: #666; margin: 10px 0;">
+                        ${explanation}
+                    </div>
+                    ${!leap ? `<div style="font-size: 1em; margin-top: 15px; color: #3498db;">
+                        <strong>Next leap year: ${nextLeapYear}</strong>
+                    </div>` : ''}
+                    ${leap ? `<div style="font-size: 1em; margin-top: 15px; color: #27ae60;">
+                        <strong>Extra day: February 29th! 🎂</strong>
+                    </div>` : ''}
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            const resultSection = document.getElementById('resultSection');
+            resultSection.innerHTML = `
+                <div class="result-card show" style="border-color: #e74c3c; color: #e74c3c;">
+                    <div class="result-icon">⚠️</div>
+                    <div class="result-text">${message}</div>
+                </div>
+            `;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                checkLeapYear();
+            }
+        }
+
+        // Auto-focus on input when page loads
+        window.onload = function() {
+            document.getElementById('yearInput').focus();
+        };
+    </script>
+</body>
+</html>
